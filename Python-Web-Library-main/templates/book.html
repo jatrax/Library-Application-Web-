@@ -1,0 +1,258 @@
+{%extends 'base.html'%}
+{%block title%}Kitap Detayları{%endblock%}
+
+{% block page2 %}
+<style>
+    .h3-c{
+        padding-left: 10px;
+        position: relative;
+        z-index: 5;
+    }
+    h3{
+        position: relative;
+        background-color: aliceblue;
+        padding: 2px;
+        color:#00f;
+        border-style:outset;
+        border:2px;
+        border-color: black;
+        border-radius: 6px;
+        font-family: 'Figtree', sans-serif;
+        font-size: 40px;
+        display: inline;
+    }
+    .book-div {
+        display: flex;
+        flex-wrap: wrap;
+        overflow-y: auto;
+        justify-content: center;
+        right: 1%;
+        z-index: -1;
+        height: 100%;
+        width: 100%;
+    }
+    .book-item {
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-position: center;
+        padding: 10px;
+        margin: 8px;
+        height: 500px;
+        width: 300px;
+        right: 10px;
+        display: flex;
+        flex-direction: column; /* Display the items in a column layout */
+        border:3px;
+        border-color: #00f;
+        border-radius: 20px;
+        border-style:solid;
+        transition: transform 0.4s ,box-shadow 0.4s;
+    }
+    .sub-btn{
+        position: fixed;
+        background-color: rgba(255, 255, 255, 0.4);
+        backdrop-filter: blur(20px);
+        bottom: 10px;
+        height: 100px;
+        width: 300px;
+        border:3px;
+        border-color: #00f;
+        border-radius: 20px;
+        border-style:solid;
+        transition: background-color 0.4s;
+        font-family: 'Figtree', sans-serif;
+        font-size: 50px;
+    }
+    .sub-btn:hover{
+        background-color: rgb(112, 112, 255);
+    }
+    .right-nav{
+        position: fixed;
+        display:inline;
+        left: 50px;
+        top: 60px;
+        height: 100%;
+        margin-right: 20px;
+        width: 300px;
+        justify-content: space-between;
+    }
+    .center {
+        display: flex;
+        justify-content: center;
+    }
+    .blocker{
+        height: 2px;
+    }
+    .info-bar{
+        display:flex;
+        height: 50%;
+        width: 100%;
+        padding: 10px;
+        margin-top: 10px;
+    }
+    .hidden {
+        display: none;
+    }
+    .boxx{
+        min-width: 200px;
+        width: 100%;
+        min-height: 500px;
+        border: 2px;
+        border-color: black;
+        border-style:inherit;
+        border-radius: 10px;
+        border-style: 6px;
+        backdrop-filter: blur(20px);
+        background-color: rgb(0, 0, 255,0.3);
+        color:white;
+        padding: 10px;
+        display:flex;
+    }
+    .comment-div{
+        margin-left: 10px;
+        width: 100%;
+        min-width: 350px;
+        min-height: 500px;
+    }
+    .comment-box{
+        padding: 10px;
+        min-width: 100px;
+        border: 2px;
+        margin-bottom: 5px;
+        border-style: 6px;
+        border-style:inherit;
+        display:flex;
+        border-radius: 10px;
+        backdrop-filter: blur(20px);
+        border-color: black;
+        background-color: rgb(0, 0, 255,0.3);
+        color:white;
+    }
+    .pn-item{
+        margin-right: 10px;
+        margin-left: 10px;
+        position:fixed;
+        right: 30x;
+        bottom: 20px;
+        height: 50px;
+        color: #00f;
+        font-size: 30px;
+        border: 2px outset #00f;
+        border-radius: 6px;
+        font-family: 'Figtree', sans-serif;
+        text-decoration: none;
+        transition: background-color 0.4s, color 0.4s;
+    }
+    .pn-item:hover {
+        background-color: rgba(0, 0, 255, 0.5);
+        color: rgb(236, 236, 236);
+    }
+    .main-b{
+        margin-top: 40px;
+        margin-left: 350px;
+        margin-right: 50px;
+    }
+    @media screen and (max-width: 769px) {
+        .info-bar{
+            display: grid;
+        }
+        .comment-div{
+            margin-left: 0;
+            margin-top: 20px;
+        }
+        .main-b{
+            margin-left: 15%;
+            margin-top: 70px;
+            width: 85%;
+        }
+        .boxx{
+            width: 100%;
+        }
+        .h3{
+            z-index: 99999999999;
+            position: relative;
+        }
+        
+        #kitabi-al-btn:disabled {
+            background-color: lightgray;
+            color: gray;
+            cursor: not-allowed;
+        }
+    }
+
+</style>{%block main%}
+<div class="main-b">{%endblock%}
+<form method="POST">
+<div class="h3-c">
+    {%block name%}
+    <h3 style="font-size: 20px;">{{book.name}}</h3>
+    {%endblock%}
+</div>
+{%block mypp%}
+<input type="text" name="myp" style="display:none" value="{{book.serial}}">{%endblock%}
+{%block right%}
+<div class="right-nav">
+    
+    <div class="center">  
+        {%block buttonname%}<button onclick="hideB()" class="pn-item" style="position: relative;margin-top: 20px;" id="kitabi-al-btn">Kitabı Al</button>{%endblock%}
+    </div>
+    <div  class="book-div">
+        
+        {%block photo%}<div class="book-item" style="background-image: url('{{book.link}}');">{%endblock%}
+        </div>
+    </div>
+        
+</div>
+<div class="blocker"></div>
+{%endblock%}
+{%block link%} {%endblock%}
+<div class="info-bar">
+    <div class="boxx">
+        {%block titles%}
+        <p class="titles">{{star}} <i class="bi bi-star-fill"></i> {%if page_count != 0%}Sayfa:{{book.page_count}} {%endif%} <i class="bi bi-book-fill"></i><br>Kategori: {{["Bilim","Bilim Kurgu","Fantastik","Dram","Macera","Korku","Romantik","Tarih","Roman","Hikaye","Şiir","Biyografi","Çocuk"][book.category]}} <i class="bi bi-book"></i> Yazar: {{book.writer}}<br>{{book.text}}
+        </p>{%endblock%}
+    </div>
+    {%block mydis%}{%endblock%}
+    <script>
+        function hideB() {
+            var button = document.getElementById('kitabi-al-btn');
+            button.disabled = false;
+            setTimeout(() => {
+                button.disabled = true;
+            }, 10);
+        }
+        function updateSliderValue() {
+            var slider = document.getElementById('myRange');
+            var sliderValueElement = document.getElementById('sliderValue');
+            sliderValueElement.innerHTML = slider.value;
+        }
+    </script>
+    {%block comment%}
+    <div class="comment-div">
+        {%if onay == True%}
+        <div class="comment-box">
+            <div>
+                <center>
+                    <button class="pn-item" style="width: 100px;height: 50px;position: relative;font-size: medium;" name="comment-button">Yorum Yap</button>
+                    <p style="font-size: small;">PUAN: <span id="sliderValue">5</span></p>
+                </center>
+                <input type="range" min="0" max="10" value="5" class="slider" id="myRange" name="user-star" oninput="updateSliderValue()">
+            </div>
+            <textarea placeholder="Yorumunuzu buraya yazınız. Önceki yorumlarınız silinir" type="text" style="width: 100%;height: 100px;margin-left: 10px;background-color: white;backdrop-filter: blur(0px);color:black" class="comment-box" name="user-comment"></textarea>
+        </div>
+        {%endif%}
+        {%for i in comments%}
+        <div class="comment-box">
+            <p>{{i[2]}} <i class="bi bi-star-fill"></i> {{i[3]}}</p>
+        </div>
+        {%endfor%}
+    </div>{%endblock%}
+</div></form></div>
+<script>
+    function hideButton() {
+        var button = document.getElementById('kitabi-al-btn');
+        button.classList.add('hidden');
+    }
+</script>
+
+{% endblock %}

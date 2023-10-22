@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{% endblock %}</title>
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+      integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
+      crossorigin="anonymous"
+    />
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
+      crossorigin="anonymous"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@500&display=swap" rel="stylesheet"><style>
+  /* Özelleştirilmiş stil */
+  a:link {
+     text-decoration: none;
+    }
+  .messages-container {
+    position: fixed;
+    top: 60px;
+    left: 4px;
+    transform: translateX(-0%);
+    z-index: 1000;
+    width: 100%;
+    max-width: 550px; /* İstediğiniz genişliği ayarlayabilirsiniz */
+  }
+  .navbarr {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    background: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    backdrop-filter: blur(20px);
+    background-color: rgba(255, 255, 255, 0.8);
+    padding: 5px 10px;
+    max-height: 55px;
+    text-align:center;
+  }
+
+  .uname {
+    color: #0000ff;
+    font-size: 20px;
+    border: 2px outset #0000ff;
+    border-radius: 6px;
+    font-family: 'Figtree', sans-serif;
+    background-color: rgba(255, 255, 255, 0.8);
+    padding: 5px 15px;
+    padding-top: 12px;
+    max-width: 55px;
+    position: relative;
+    transition: color 0.4s, background-color 0.4s;
+}
+
+.uname:hover {
+    color: white;
+    background-color: rgba(0, 0, 255, 0.5);
+}
+
+.uname::after {
+    content: "{%if username is defined%}{{username[0][0]}}{%endif%}";
+    background-color: #000;
+    color: #fff;
+    font-size: 12px;
+    padding: 3px 8px;
+    border-radius: 4px;
+    position: absolute;
+    left: 47px; /* Position the label at the left */
+    right: auto; /* Reset the right property */
+    bottom: -5px;
+    transform: translateX(-100%) translateY(100%); /* Push the label to the bottom-left corner and make it flow from right to left */
+    opacity: 0; /* Hide the label by default */
+    pointer-events: none; /* Prevent the label from affecting mouse events */
+    z-index: -1; /* Move the label behind the .uname element */
+    transition: opacity 0.4s; /* Add a transition for smooth visibility */
+}
+
+.uname:hover::after {
+    opacity: 1; /* Show the label on hover */
+    z-index: 1; /* Move the label above the .uname element */
+}
+
+  body {
+    background-image: url(
+    'https://img.freepik.com/free-vector/abstract-white-shapes-background_79603-1362.jpg?w=900&t=st=1690873455~exp=1690874055~hmac=9b0cabf3adbf34b75c5938e2582de77a7915f5bbf0d6390b01363f35adb41fe7'
+    );
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    background-size: cover;
+  }
+
+  .nav-item {
+    color: #00f;
+    font-size: 20px;
+    border: 2px outset #00f;
+    border-radius: 6px;
+    font-family: 'Figtree', sans-serif;
+    padding: 8px 15px;
+    text-decoration: none;
+    transition: background-color 0.4s, color 0.4s;
+    margin-right: 4px;
+    max-height: 55px;
+    min-width: 55px;
+      background-color: rgba(255, 255, 255, 0.8);
+  }
+  .nav-item2 {
+    color: #00f;
+    font-size: 20px;
+    padding: 10px 0px;
+    text-decoration: none;
+    transition: background-color 0.4s, color 0.4s;
+    max-height: 55px;
+    padding-left: 7px;
+    max-width: 10px;
+    margin-right: 12px;
+  }
+  .nav-item2:hover{
+    color: red;
+  }
+  .nav-item:hover {
+    background-color: rgba(0, 0, 255, 0.5);
+    color: rgb(236, 236, 236);
+  }
+  .r-nav{
+    display: flex;
+  }
+  .oran{
+    width: 100%;
+    content: left;
+  }
+  @media screen and (max-width: 769px) {
+    .r-nav{
+      display: grid;
+      position:fixed;
+      left:0;
+      top: 60px;
+    }
+    .oran{
+      max-width: 90%;
+      margin-left: 10%;
+    }
+}
+
+</style>  
+</head>
+<body>
+  <nav class="navbarr"><div style="left: 0px;" class="t-logo">{%block hrf%}<a href="/" ><img src="https://static.thenounproject.com/png/610387-200.png" style="height: 50px;margin-right: 10px;"></a>{%endblock%}
+    </div>{%block src%}{%endblock%}
+      <div class="r-nav">
+        {% block navv %}
+          {%if admin%}
+          <a class="nav-item" href="/info"><i class="bi bi-bar-chart-line-fill"></i></a>
+          <a class="nav-item" href="/users"><i class="bi bi-person-lines-fill"></i></a>
+          <a class="nav-item" href="/kitap_ekle"><i class="bi bi-plus-square-fill"></i></a>
+          <a class="nav-item" href="/requests"><i class="bi bi-bell-fill"></i></a>
+          {%endif%}
+          <a class="nav-item" href="/lib"><i class="bi bi-stack"></i></a>
+          <a class="nav-item" href="/"><i class="bi bi-house-fill"></i></a>{%if username is defined%}<div class="uname"><i class="bi bi-person-fill"></i></div>{%endif%}
+          <a class="nav-item2" href="/logout"><i class="bi bi-box-arrow-right"></i></a> 
+        {% endblock %}
+      </div>
+  </nav>
+
+  <div class="messages-container">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          {% if category == 'error' %}
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+              {{ message }}
+              <button type="button" class="close" data-dismiss="alert">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+          {% else %}
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+              {{ message }}
+              <button type="button" class="close" data-dismiss="alert">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+          {% endif %}
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+  </div>
+
+  <div style="height: 60px;"></div>
+  {%block page2%}{%endblock%}
+<center>
+<div class="oran">
+  {% block page %}{% endblock %}
+</div></center>
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+</body>
+</html>

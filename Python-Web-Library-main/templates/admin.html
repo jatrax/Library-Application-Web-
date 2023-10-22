@@ -1,0 +1,166 @@
+{%extends 'book.html'%}
+{% block title %}Kitap Yönetim{% endblock %}
+{%block main%}
+<div class="main-d">{%endblock%}
+{%block name%}
+<input type="name" value="{{book.name}}" name="name_bar" style="font-weight: 900;border: 1px;border-style:solid;border-color: black;border-radius: 6px;width: 600px;margin-left: 10px;">
+NAME ------ {{star}} <i class="bi bi-star-fill"></i> ------{%endblock%}
+{%block link%}<input type="text" value="{{book.link}}" name="link_bar" style="font-weight: 900;border: 1px;border-style:solid;border-color: black;border-radius: 6px;margin-left: 20px;width: 600px;"> 
+LINK
+{%endblock%}
+{%block titles%}<textarea class="titles"  style="height: 100%;width:800px;font-weight: 900;border: 1px;border-style:solid;border-color: black;border-radius: 6px;" name="titles" >{{book.text}}</textarea>{%endblock%}
+
+{%block mydis%}
+
+<div>
+    
+<div class="last_data" style="display: grid;margin-left: 20px;">
+    
+    Kategori:<select id="catOption" value="{{book.category}}" name="cat_selector" style="display: inline; height: 40px; margin-top: 5px;width: 180px;font-weight: 900;text-align: center;">
+        {% for option in ["Bilim","Bilim Kurgu","Fantastik","Dram","Macera","Korku","Romantik","Tarih","Roman","Hikaye","Şiir","Biyografi","Çocuk"] %}
+            <option value="{{ ["Bilim","Bilim Kurgu","Fantastik","Dram","Macera","Korku","Romantik","Tarih","Roman","Hikaye","Şiir","Biyografi","Çocuk"].index(option) }}"   class="mybutton">{{ option }}</option>
+        {% endfor %}
+    </select>
+    <script>
+        const bookCategory = "{{book.category}}";
+        const catOptionSelect = document.getElementById('catOption');
+        for (const option of catOptionSelect.options) {
+            if (option.value === bookCategory) {
+                option.selected = true;
+                break;
+            }
+        }
+    </script>
+    Yazar:<input name="writer" type="name" placeholder="Yazar Adı" value="{{book.writer}}" style="font-weight: 900;border: 1px;border-style:solid;border-color: black;border-radius: 6px;width: 180px;text-align: center;">
+    Sayfa Sayısı:<input name="page_count" type="name" placeholder="Sayfa sayısı" value="{{book.page_count}}" style="font-weight: 900;border: 1px;border-style:solid;border-color: black;border-radius: 6px;width: 180px;text-align: center;">
+    <button name="apply" onclick="valueapply()" class="mybutton" style="margin-top: 20px;">KİTAP BİLGİLERİNİ GÜNCELLE</button>
+    <div style="margin-top: 70px;"></div>
+    Kitap:
+    <select id="selectOption" name="book_id_selector" style="display: inline; height: 40px;width: 180px;font-weight: 900;">
+        {% for option, item,date,username in options %}
+            <option value="{{ option }}"   class="mybutton">{{ option }}  Owner :{{ item }}:{{username}} Last Date : {{date}}</option>
+        {% endfor %}
+    </select>
+    <button name="up" onclick="valueup()" class="mybutton"><i class="bi bi-plus-square"></i> STOK EKLE <i class="bi bi-plus-square"></i></button>
+    <button name="down" onclick="valuedown()" class="mybutton"><i class="bi bi-dash-square"></i> STOKTAN SİL <i class="bi bi-dash-square"></i></button><input name="val" value="0" style="display: none;">
+    <button name="delete" onclick="valuedelete()" class="mybutton" style="border-color: red;color:red"><i class="bi bi-trash"></i>YAYINDAN KALDIR<i class="bi bi-trash"></i></button>
+</div>
+</div>
+<div style="display:grid;justify-content: space-around;font-weight: 900;border: 10px;height: 320px;margin-left: 10px;margin-top: 5px;border-radius: 20px;">
+    <style>
+        .comment-div{
+            border: 10px;
+            border-radius: 6px;
+            border-style: solid;
+            padding: 5px;
+        }
+        .main-d{
+            margin-left: 0px;
+        }
+        .mybutton{
+            margin-top: 5px;
+            height: 50px;
+            width: 180px;
+            color: #00f;
+            font-size: 15px;
+            border: 2px outset #00f;
+            border-radius: 6px;
+            font-family: 'Figtree', sans-serif;
+            text-decoration: none;
+            transition: background-color 0.4s, color 0.4s;
+        }
+        .mybutton:hover{
+            background-color: rgba(0, 0, 255, 0.5);
+            color: rgb(236, 236, 236);
+        }
+        .info-bar{
+        display:flex;
+        width: 100%;
+        padding: 10px;
+        margin-left: 0px;
+        border: 10px;
+    }
+        .pn-item{
+            margin-right: 10px;
+            margin-left: 10px;
+            position:fixed;
+            right: 30x;
+            bottom: 20px;
+            height: 50px;
+            color: #00f;
+            font-size: 30px;
+            border: 2px outset #00f;
+            border-radius: 6px;
+            font-family: 'Figtree', sans-serif;
+            text-decoration: none;
+            transition: background-color 0.4s, color 0.4s;
+        }
+        .pn-item:hover {
+            background-color: rgba(0, 0, 255, 0.5);
+            color: rgb(236, 236, 236);
+        }
+        @media screen and (max-width: 1000px) {
+            .info-bar{
+                display: grid;
+            }
+
+        }
+    </style>
+
+</div>
+
+<script>
+    var element = document.getElementsByName('val')[0]
+    function valueup() {
+        var element = document.getElementsByName('val')[0];
+        var currentValue = parseInt(element.value);
+        element.value = 1;
+    }
+    function valuedown() {
+        var element = document.getElementsByName('val')[0];
+        var currentValue = parseInt(element.value);
+        element.value = 2;
+    }
+    function valueapply() {
+        var element = document.getElementsByName('val')[0];
+        var currentValue = parseInt(element.value);
+        element.value = 3;
+    }
+    
+    function valuedelete() {
+        var element = document.getElementsByName('val')[0];
+        var currentValue = parseInt(element.value);
+        element.value = 4;
+    }
+</script>
+<script>
+    function hideButton() {
+        var button = document.getElementById('kitabi-al-btn');
+        button.classList.add('hidden');
+    }
+
+    function updateSliderValue() {
+        var slider = document.getElementById('myRange');
+        var sliderValueElement = document.getElementById('sliderValue');
+        sliderValueElement.innerHTML = slider.value;
+    }
+</script>
+
+
+{%endblock%}
+{%block comment%}
+    <div class="comment-div">
+        {%for i in comments%}
+    <form method="POST">
+        <div style="display: flex;width: 100%;">
+            <button name="delete-comment" class="pn-item" style="position: relative;margin-top: 30px;font-size: 15px;height: 40px;">SİL</button>
+            <div class="comment-box">
+                <input value="{{i[0]}}" name="comment-user-id" style="display: none;">
+                <input value="{{i[1]}}" name="comment-book-serial" style="display: none;">
+                <p>{%if i[4]%}SİLİNMİŞ : {%endif%} {{i[2]}} <i class="bi bi-star-fill"></i> {{i[3]}}</p>
+            </div>
+        </div></form>
+        {%endfor%}
+    </div>{%endblock%}
+{%block right%}{%endblock%}
+{%block buttonname%}<button onclick="hideButton()" class="pn-item" id="kitabi-al-btn">Kitabı Al</button>{%endblock%}

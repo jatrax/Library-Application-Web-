@@ -1,0 +1,217 @@
+{%extends 'base.html'%}
+{% block title %}İstekler{% endblock %}
+
+{% block page %}
+<style>
+    .main-div{
+        width: 100%;
+        display:flex;
+    }
+    .R-div{
+        width: 50%;
+    }
+
+    
+    .req-div{
+        width:100%;
+    }
+    .req-box{
+        width: 99%  ;
+        padding:25px;
+        height: 100px;
+        margin-top: 10px;
+        background-color: rgba(180, 180, 255, 0.5);
+        backdrop-filter: blur(20px);
+        display: flex;
+        align-items: center;
+        justify-content: space-between; 
+        border: 2px black groove;
+        border-radius: 20px;
+        
+    }
+    .req-item{
+        color:black;
+        font-size: 13px;
+        font-weight: 500;
+    }
+    .lbl{
+        display:grid;
+        font-size: 10px;
+        color:black;
+        font-size: 15px;
+    }
+    .req-buttons{
+        font-size: 30px;
+        width: 100px;
+        border-radius: 6px;
+    }
+    .btn-approve{
+            height: 35px;
+            color: #00f;
+            font-size: 20px;
+            background: #5f5;
+            border: 2px outset #00f;
+            border-radius: 6px;
+            font-family: 'Figtree', sans-serif;
+            text-decoration: none;
+            transition: background-color 0.4s, color 0.4s;
+    }
+    .btn-deny{
+            height: 35px;
+            color: #00f;
+            font-size: 20px;
+            background: #f55;
+            border: 2px outset #00f;
+            border-radius: 6px;
+            font-family: 'Figtree', sans-serif;
+            text-decoration: none;
+            transition: background-color 0.4s, color 0.4s;
+    }
+    .btn-approve:hover {
+            background-color: rgba(0, 0, 255, 0.5);
+            color: rgb(236, 236, 236);
+    }
+    .btn-deny:hover {
+            background-color: rgba(0, 0, 255, 0.5);
+            color: rgb(236, 236, 236);
+    }  
+    @media screen and (min-width: 400px) and (max-width: 769px) {
+        .main-div{
+            display: grid;
+        }
+        .R-div{
+            margin-bottom: 20px;
+            width: 100%;
+        }
+    }
+    @media screen and (max-width: 400px) {
+        .main-div{
+        width: 100%;
+        display:grid;
+        }
+            
+        .R-div{
+            margin-bottom: 20px;
+            width: 100%;
+        }
+        .req-div{
+            width: 90%;
+        }
+        .req-item{
+            color:black;
+            font-size: 10px;
+            font-weight: 500;
+        }
+        .req-box{
+            height: auto;
+            display:flow-root;
+        }
+        .req-buttons{
+            display: flex;
+            justify-content: space-between;
+        }
+        .lbl{
+            display:grid;
+            font-size: 8px;
+            color:black;
+            font-size: 15px;
+        }
+    }
+</style>
+    <center>
+        <div class="main-div">
+        <div class="R-div">
+            <label style="color:black;border: 2px blue;border-radius: 20px;border-style: solid;padding: 10px;background-color: rgba(255, 255, 255, 0.8);font-weight: 900;">ALMA İSTEKLERİ</label>
+            {%for i in reqs%}
+            <form method="POST">
+            <div class="req-div">
+                <div class="req-box">
+                    <div class="lbl">
+                        <label class="req-item">USER ID</label>
+                        <label class="req-item">SERIAL NUMBER:</label>
+                    </div>
+                    <div class="lbl">
+                        <label class="req-item">{{i[0]}}</label>
+                        <input style="display: none;" name="label-ID" value="{{i[0]}}">
+                        <label class="req-item">{{i[2]}}</label>
+                        <input style="display: none;" name="label-SERIAL" value="{{i[2]}}">
+                    </div>
+                    <div class="lbl">
+                        <label class="req-item">USER NAME:</label>
+                        <label class="req-item">BOOK NAME:</label>
+                        
+                    </div>
+                    <div class="lbl">
+                        <label class="req-item">{{i[1]}}</label>
+                        <input style="display: none;" name="label-USERNAME" value="{{i[1]}}">
+                        <label class="req-item">{{i[3]}}</label>
+                        <input style="display: none;" name="label-NAME" value="{{i[3]}}">
+                    </div>
+                    <div class="lbl">
+                    </div>
+                    <div class="lbl">
+                        <div>
+                        <label class="req-item">DAYS</label>
+                        <input name="label-days" value="30" style="width: 40px;font-weight: 700;" class="req-imp"></div>
+                        <label style="color: black;font-weight: 500;font-size: 13px;">R_DATE:{{i[4]}}</label>
+                    </div>
+                    <div class="req-buttons">
+                        <button type="submit" class="btn-approve" name="btn-approve" id="btn-approvee" onclick="hideButton(this)"><i class="bi bi-check-square"></i></button>
+                        <button type="submit" class="btn-deny" name="btn-deny"><i class="bi bi-x-square"></i></button>
+                    </div>
+                </div>    
+            </div>
+            </form>
+            {%endfor%}
+        </div>
+        <div class="R-div">
+            <label style="color:black;border: 2px blue;border-radius: 20px;border-style: solid;padding: 10px;background-color: rgba(255, 255, 255, 0.8);font-weight: 900;">BIRAKMA İSTEKLERİ</label>
+            {%for i in reqs_d%}
+            <form method="POST">
+            <div class="req-div">
+                <div class="req-box" style="background-color: rgba(255, 180, 180, 0.8);">
+                    <div class="lbl">
+                        <label class="req-item">USER ID</label>
+                        <label class="req-item">BOOK ID:</label>
+                    </div>
+                    <div class="lbl">
+                        <label class="req-item">{{i[0]}}</label>
+                        <input style="display: none;" name="label-ID" value="{{i[0]}}">
+                        <label class="req-item">{{i[2]}}</label>
+                        <input style="display: none;" name="label-BOOK-ID" value="{{i[2]}}">
+                    </div>
+                    <div class="lbl">
+                        <label class="req-item">USER NAME:</label>
+                        <label class="req-item">BOOK NAME:</label>
+                        
+                    </div>
+                    <div class="lbl">
+                        <label class="req-item">{{i[1]}}</label>
+                        <input style="display: none;" name="label-USERNAME" value="{{i[1]}}">
+                        <label class="req-item">{{i[3]}}</label>
+                        <input style="display: none;" name="label-NAME" value="{{i[3]}}">
+                    </div>
+                    <div class="lbl">
+                    </div>
+                    <div class="lbl">
+                        <label style="color: black;font-weight: 500;font-size: 13px;">R_DATE:{{i[4]}}</label>
+                    </div>
+                    <div class="req-buttons">
+                        <button type="submit" class="btn-approve" name="btn-approve" id="btn-approvee" onclick="hideButton(this)"><i class="bi bi-check-square"></i></button>
+                        <button type="submit" class="btn-deny" name="btn-deny"><i class="bi bi-x-square"></i></button>
+                    </div>
+                </div>    
+            </div>
+            </form>
+            {%endfor%}
+        </div>
+    </div>
+</center>
+    <script>
+        function hideButton(button) {
+            var reqDiv = button.closest('.req-div');
+            reqDiv.style.display = 'none';
+        }
+    </script>
+    
+{% endblock %}

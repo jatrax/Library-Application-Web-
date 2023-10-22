@@ -1,0 +1,73 @@
+{%extends 'base.html'%}
+{% block title %}Kitap Ekle{% endblock %}
+{%block page%}
+<form method="POST">
+<div class="center">
+    <input type="name" name="name_bar" placeholder="İSİM" style="font-weight: 900;border: 2px;border-style:solid;border-color: #00f;border-radius: 6px;width: 600px;text-align: center;">
+    <textarea class="titles"  style="font-weight: 900;border: 2px;border-style:solid;border-color: #00f;border-radius: 6px;width: 600px;height: 350px;margin-top: 5px;text-align: center;" name="titles" placeholder="AÇIKLAMA"></textarea>
+    <textarea name="link_bar" placeholder="FOTO LİNK" style="font-weight: 900;border: 2px;border-style:solid;border-color: #00f;border-radius: 6px;width: 600px;height: 35px;margin-top: 5px;text-align: center;"></textarea>
+    <div class="last_data" style="display: grid;">
+        <div>
+        Kategori:<select id="catOption" name="cat_selector" style="display: inline; height: 40px; margin-top: 5px;width: 180px;font-weight: 900;text-align: center;border-radius: 6px;">
+            {% for option in ["Bilim","Bilim Kurgu","Fantastik","Dram","Macera","Korku","Romantik","Tarih","Roman","Hikaye","Şiir","Biyografi","Çocuk"] %}
+                <option value="{{ ["Bilim","Bilim Kurgu","Fantastik","Dram","Macera","Korku","Romantik","Tarih","Roman","Hikaye","Şiir","Biyografi","Çocuk"].index(option) }}"   class="mybutton">{{ option }}</option>
+            {% endfor %}
+        </select></div>
+        <div>
+        Yazar:<input name="writer" type="name" placeholder="Yazar Adı" value="Bilinmiyor" style="margin-left: 23px;font-weight: 900;border: 1px;border-style:solid;border-color: black;border-radius: 6px;width: 180px;text-align: center;">
+        </div><div>Sayfa Sayısı:<input name="page_count" type="name" placeholder="Sayfa sayısı" value="0" style="margin-right: 23px;font-weight: 900;border: 1px;border-style:solid;border-color: black;border-radius: 6px;width: 180px;text-align: center;">
+    </div></div>
+    
+    <button onclick="hideButton()" class="pn-item" id="kitabi-al-btn">Kitabı Ekle</button>
+</div></form>
+<script>
+    function hideButton() {
+        var button = document.getElementById('kitabi-al-btn');
+        button.classList.add('hidden');
+    }
+</script>
+<style>
+    .pn-item{
+            margin-left: 50%;
+            margin-top: 10px;
+            transform: translate(-50%);
+            width: 150px;
+            height: 35px;
+            color: #00f;
+            font-size: 20px;
+            border: 2px outset #00f;
+            border-radius: 6px;
+            font-family: 'Figtree', sans-serif;
+            text-decoration: none;
+            transition: background-color 0.4s, color 0.4s;
+        }
+        .pn-item:hover {
+            background-color: rgba(0, 0, 255, 0.5);
+            color: rgb(236, 236, 236);
+        }
+.sub-btn{
+    background-color: rgba(255, 255, 255, 0.4);
+    backdrop-filter: blur(20px);
+    height: 100px;
+    width: 300px;
+    border-radius: 20px;
+    border:3px;
+    border-color: #00f;
+    border-style:solid;
+    transition: background-color 0.4s;
+    font-family: 'Figtree', sans-serif;
+    font-size: 50px;
+    margin-top: 25px;
+    margin-left : 50%;
+    transform: translate(-50%);
+}
+.sub-btn:hover{
+    background-color: rgb(112, 112, 255);
+}
+.center {
+        display: grid;
+        justify-content: center;
+        
+    }
+</style>
+{%endblock%}

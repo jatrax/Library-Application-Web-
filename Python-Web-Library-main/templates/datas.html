@@ -1,0 +1,100 @@
+{%extends 'base.html'%}
+{%block page%}
+<style>
+    .flex-container {
+        display: flex;
+    }
+
+    .left-column, .right-column {
+        width: 50%;
+        display: flex;
+        flex-direction: column;
+        margin-top: 30px;
+    }
+
+    .products {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .product-item {
+        flex: 1;
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-position: center;
+        padding: 5px;
+        font-family: 'Figtree', sans-serif;
+        display: flex;
+        flex-direction: column;
+        border: 2px outset white;
+        border-radius: 8px;
+        border-color: white;
+        max-width: calc(50% - 10px);
+        min-height: 400px;
+    }
+
+    .product-item2 {
+        flex: 1;
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-position: center;
+        padding: 5px;
+        font-family: 'Figtree', sans-serif;
+        display: flex;
+        flex-direction: column;
+        border: 2px outset white;
+        border-radius: 8px;
+        border-color: white;
+        max-width: calc(50% - 10px);
+        min-height: 150px;
+    }
+    .pn-item {
+        text-align: center;
+        background-color: white;
+        height: 35px;
+        color: #00f;
+        font-size: 20px;
+        border: 2px outset #00f;
+        border-radius: 6px;
+        font-family: 'Figtree', sans-serif;
+        text-decoration: none;
+        transition: background-color 0.4s, color 0.4s;
+        padding: 5px;
+    }
+
+    .pn-item:hover {
+        background-color: rgba(0, 0, 255, 0.5);
+        color: rgb(236, 236, 236);
+    }
+</style>
+</head>
+<body>
+
+<div class="flex-container">
+    <div class="left-column">
+        <label class="pn-item">EN ÇOK OKUNAN KİTAPLAR</label>
+        <div class="products">
+            {%for i in books%}<div style="display: grid;width: 32%;">
+            <label class="pn-item">{{i['name']}}</label>
+            <label class="pn-item">Okunma Sayısı:{{i['count']}}</label>
+            <div style="background-image: url('{{i.link}}');width: 100%;height: 400px;background-position: center;background-size: cover;"></div>
+            </div>
+            {%endfor%}
+        </div>
+    </div>
+    <div class="right-column">
+        <label class="pn-item">EN ÇOK OKUYAN KULLANICILAR</label>
+        <div class="products">
+            {%for i in users%}
+            <div class="product-item2">
+                <label class="pn-item">{{i['name']}}</label>
+                <label class="pn-item">{{i.email}}</label>
+                <label class="pn-item">Okunan kitap:{{i['count'][1]}}</label>
+            </div>
+            {%endfor%}
+        </div>
+    </div>
+</div>
+
+{%endblock%}

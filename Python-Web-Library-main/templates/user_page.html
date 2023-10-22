@@ -1,0 +1,135 @@
+{%extends 'base.html'%}
+{% block title %}Kullanıcılar{% endblock %}
+
+{%block page%}
+<style>
+    .src_bar {
+        font-family: 'Figtree', sans-serif;
+        margin-right: auto; /* Ortalamak için sağa boşluk ver */
+        margin-left: auto; /* Ortalamak için sola boşluk ver */
+        transition: width 0.7s;
+        width: 90px;
+        border: 2px;
+        border-color: #00f;
+        border-style: outset;
+        border-radius: 6px;
+        background-color: rgba(255, 255, 255, 0.5);
+        color: #00f;
+        padding: 5px 10px;
+    }
+
+    .src_bar::placeholder {
+        color: rgb(0, 0, 0);
+        transition: background-color 0.4s, color 0.4s;
+    }
+
+    .src_bar:hover::placeholder {
+        color: rgb(100, 100, 255);
+    }
+
+    .src_bar:focus {
+        width: 400px;
+    }
+    .src_btn{
+        transition: background-color 0.4s, color 0.4s;
+        color:#00f;
+        background-color: rgba(255, 255, 255, 0.6);
+        border-color: #00f;
+        width: 80px;border :2px;border-style: outset;border-radius: 6px;;
+        max-height: 40px;
+    }
+    .src_btn:hover{
+        background-color: #66f;
+        color:black;
+        border-color: black;
+    }
+</style>
+<center>
+<form method="POST">
+<input name="myp" class="src_bar" type="text" placeholder="Ara"> 
+<button type="submit" name="search_name" class="src_btn" >İSİM<i class="bi bi-search"></i></button>
+<button type="submit" name="search_email" class="src_btn" >EMAIL<i class="bi bi-search"></i></button>
+</form>
+</center>
+<div class="product-container">
+    {% for i in arr %}
+            <div class="box-div">
+                <p>ID: {{ i[0][0] }} USERNAME: {{ i[0][2] }}<br>EMAIL: {{ i[0][1] }}</p>
+                <div class="minibox">
+                    {% for j in i[1] %}
+                    <form method="POST">
+                        <div class="inside">
+                            <p>{{j[6]}}<br>{{ j[4] }}</p><button type="submit" class="pn-item">GERİ AL</button>
+                            <input style="display: none;" name="book_id" value="{{j[0]}}">
+                        </div>
+                    </form>
+                    {% endfor %}
+                </div>
+            </div>
+    {% endfor %}
+</div>
+<style>
+    .back_btn{
+        font-size: 15px; min-width: 70px;height: 45px;max-height: 45px;border-radius: 10px;background: rgba(200,200,255,0.4);
+        transition: background-color 0.4s;border-color: red;border:1px;border-style: solid;margin-right: 4px;
+
+    }
+    .back_btn:hover{
+        background-color: #f55;
+    }
+    .center-div {
+    display: flex;
+    justify-content: center;
+}
+.pn-item{
+            margin-right: 10px;
+            margin-left: 10px;
+            height: 35px;
+            color: #00f;
+            font-size: 20px;
+            border: 2px outset #00f;
+            border-radius: 6px;
+            font-family: 'Figtree', sans-serif;
+            text-decoration: none;
+            transition: background-color 0.4s, color 0.4s;
+        }
+        .pn-item:hover {
+            background-color: rgba(0, 0, 255, 0.5);
+            color: rgb(236, 236, 236);
+        }
+.product-container {
+    display: flex;
+    flex-wrap: wrap; /* This allows products to wrap to a new line */
+    justify-content: center;
+}
+
+.box-div {
+    padding: 2px;
+    margin: 20px;
+    width: 450px; /* Adjust the width as per your requirement */
+    border: 1px;
+    border-radius: 10px;
+    border-style: groove;
+    border-color: blue;
+    background-color: rgba(200,200,255,0.5);
+    backdrop-filter: blur(20px);
+    color: black;
+}
+
+.minibox {
+    display: inline;
+    font-size: 20px;
+}
+.inside{
+    display: flex;
+    justify-content: space-between;
+    border: 1px;
+    border-style: solid;
+    border-color: black;
+    border-radius: 10px;
+    background: #fff;
+    color: black;
+    align-items: center;
+}
+</style>
+{%endblock%}
