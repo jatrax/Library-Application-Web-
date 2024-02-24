@@ -25,7 +25,6 @@ app.config['SECRET_KEY'] = secrets.token_bytes(32)
 app.config['SESSION_TYPE'] = 'filesystem'
 
 Session(app)
-allBooks = []
 books = []
 SCOPES = ['User.Read', 'User.ReadBasic.All']
 import msal
@@ -36,23 +35,20 @@ client_instance = msal.ConfidentialClientApplication(
 )
 
 admins = []
-
-PAGE = 0
-ITEMS_PER_PAGE = 24
+ITEM_PER_PAGE = 24
 def lock_next(items):
     number = 0
     for i in items:
         number+=1
-    if(number < ITEMS_PER_PAGE):
+    if(number < ITEM_PER_PAGE):
         return True
     return False
 
 def page_f(arr,reset = False):
-    global PAGE
     elements = []
     if reset:
-        PAGE = 0
-    for i in range(PAGE*ITEMS_PER_PAGE,ITEMS_PER_PAGE*(PAGE+1)):
+        session["PAGE"] = 0
+    for i in range(session.get("PAGE")*ITEM_PER_PAGE,ITEM_PER_PAGE*(session.get("PAGE")+1)):
         try:
             elements.append(arr[i])
         except:
@@ -83,14 +79,13 @@ def r_sys():
     return render_template('lib.html',allBooks = fx.get_lib(fx.get_db_books(),session.get('user_id')),username = session.get('user_username'),admin = session.get('user_id') in admins)
 
 def r_index():
-    allBooks.clear()
+    session["allBooks"].clear()
     books = fx.mysql_q("SELECT * FROM unique_books LEFT JOIN books ON unique_books.serial_Number = books.serial_Number ORDER BY unique_books.BOOK_NAME")
     fx.res_stock()
     for i in books:
         tempBook = Book(i[7], i[0], i[1], i[9], i[2], i[10] , i[11],fx.get_stock(i[0]),i[3],i[4],i[5],i[6])
-        allBooks.append(tempBook)
-    global PAGE
-    return render_template('index.html',allBooks = page_f(fx.make_one(allBooks)),username = session.get('user_username'),admin = session.get('user_id') in admins,PAGE = PAGE,LOCK = lock_next(page_f(fx.make_one(allBooks))))  
+        session["allBooks"].append(tempBook)
+    return render_template('index.html',allBooks = page_f(fx.make_one(session.get("allBooks"))),username = session.get('user_username'),admin = session.get('user_id') in admins,PAGE = session.get("PAGE"),LOCK = lock_next(page_f(fx.make_one(session.get("allBooks")))))  
 
 def update_book_info(user_id, serial_number):
         qry = "select * from books where owned_id = "+str(session.get('user_id'))+" and serial_number = "+str(serial_number)
@@ -176,12 +171,12 @@ def add_book(t,y,date):
             dt = dy[0]
             insert_query = "INSERT INTO book_logs VALUES ("+str(dt[0])+","+str(dt[1])+",'"+str(dt[6])+"',"+str(dt[2])+",'"+str(dt[3])[:19]+"','"+str(dt[4])[:19]+"')"
             fx.mysql_commit(insert_query)
-            allBooks.clear()
+            session["allBooks"].clear()
             books = fx.mysql_q("SELECT * FROM unique_books LEFT JOIN books ON unique_books.serial_Number = books.serial_Number ORDER BY unique_books.BOOK_NAME")
             fx.res_stock()
             for i in books:
                 tempBook = Book(i[7], i[0], i[1], i[9], i[2], i[10] , i[11],fx.get_stock(i[0]),i[3],i[4],i[5],i[6])
-                allBooks.append(tempBook)
+                session["allBooks"].append(tempBook)
             flash("Kitap Verildi",category="success")
     delete_req(t,y)
     r_info()
@@ -234,7 +229,8 @@ def search_f(dataa,selectedOption,cat_option):
     elif selectedOption == '2' or selectedOption == '3':
         qry += " ORDER BY unique_books.book_name;"
         myprods = fx.mysql_q(qry)
-        myserials = cursor.execute("SELECT serial_number, COUNT(*) AS sayi FROM book_logs GROUP BY serial_number ORDER BY sayi DESC;").fetchall()
+        qry = "SELECT serial_number, COUNT(*) AS sayi FROM book_logs GROUP BY serial_number ORDER BY sayi DESC;"
+        myserials = fx.mysql_q(qry)
         kitap_id_siralamasi = {kitap_id: siralama for kitap_id, siralama in myserials}
 
         # Kitapları sıralama bilgisine göre sıralama
@@ -247,13 +243,12 @@ def search_f(dataa,selectedOption,cat_option):
     
     cursor.close()
     connection.close()
-    allBooks.clear()
+    session["allBooks"].clear()
     fx.res_stock()
     for i in myprods:
         tempBook = Book(i[7], i[0], i[1], i[9], i[2], i[10] , i[11],fx.get_stock(i[0]),i[3],i[4],i[5],i[6])
-        allBooks.append(tempBook)
-    global PAGE
-    return render_template('index.html',allBooks = page_f(fx.make_one(allBooks),True),username = session.get('user_username'),admin = session.get('user_id') in admins,PAGE = PAGE,LOCK = lock_next(page_f(fx.make_one(allBooks)))) 
+        session["allBooks"].append(tempBook)
+    return render_template('index.html',allBooks = page_f(fx.make_one(session.get("allBooks")),True),username = session.get('user_username'),admin = session.get('user_id') in admins,PAGE = session.get("PAGE"),LOCK = lock_next(page_f(fx.make_one(session.get("allBooks"))))) 
 
 def redirect_book(i):
     global myBook
@@ -305,63 +300,65 @@ def redirect_book_admin(i):
 
 @app.route('/', methods = ['POST','GET'])
 def index():
+    if session.get("allBooks") == None:
+        session["allBooks"] = []
+        fx.res_stock()
+        books = fx.mysql_q("SELECT * FROM unique_books LEFT JOIN books ON unique_books.serial_Number = books.serial_Number ORDER BY unique_books.BOOK_NAME;")
+        for i in books:
+            tempBook = Book(i[7], i[0], i[1], i[9], i[2], i[10] , i[11],fx.get_stock(i[0]),i[3],i[4],i[5],i[6])
+            session["allBooks"].append(tempBook)
+    if session.get("PAGE") == None:
+        session["PAGE"] = 0
     print(session.get('user_id'))
     fx.res_stock()
-    global PAGE
     fx.update_database()
     data = request.form
     if request.method == "POST":
-        if 'per_button' in data:
-            global ITEMS_PER_PAGE
-            ITEMS_PER_PAGE = int(data['per'])
-            PAGE = 0
-            r_index()
-        else:
-            try:
-                if data['myval'] == '0':
-                    PAGE = 0
-                    if data['search?'] != '1':
-                        query ="select * from books where serial_number = "+data['myp']
-                        i = fx.mysql_q(query)
-                        if session.get('user_id') in admins and 'admin-btn' in data:
-                            redirect_book_admin(i[0])
-                            return redirect(url_for('admin'))
-                        redirect_book(i[0])
-                        return redirect(url_for('book'))
-                    else:
-                        selected_option = data['sortOption']
-                        selected_cat = data['cat_option']
-                        search_f(data['myp'],selected_option,selected_cat)
-                        return redirect(url_for('index'))
-                    fx.update_database()
-                elif data['myval'] == '1':
-                    PAGE -= 1
-                    r_index()
-                    return redirect(url_for('index'))
-                elif data['myval'] == '2':
-                    PAGE += 1
-                    r_index()
-                    return redirect(url_for('index'))
-                elif data['myval'] == '3':
-                    PAGE = 0
-                    r_index()
-                    return redirect(url_for('index'))
-            except:
-                PAGE = 0
+        try:
+            if data['myval'] == '0':
+                session["PAGE"] = 0
                 if data['search?'] != '1':
-                    query ="SELECT * FROM unique_books LEFT JOIN books ON unique_books.serial_Number = books.serial_Number WHERE unique_books.serial_number = "+data['myp']
+                    query ="select * from books where serial_number = "+data['myp']
                     i = fx.mysql_q(query)
-                    redirect_book(i[0])
-                    redirect_book_admin(i[0])
-                    if session.get('user_id') in admins  and 'admin-btn' in data:
+                    if session.get('user_id') in admins and 'admin-btn' in data:
+                        redirect_book_admin(i[0])
                         return redirect(url_for('admin'))
+                    redirect_book(i[0])
                     return redirect(url_for('book'))
                 else:
                     selected_option = data['sortOption']
                     selected_cat = data['cat_option']
                     search_f(data['myp'],selected_option,selected_cat)
+                    return redirect(url_for('index'))
+                fx.update_database()
+            elif data['myval'] == '1':
+                session["PAGE"] -= 1
+                r_index()
+                return redirect(url_for('index'))
+            elif data['myval'] == '2':
+                session["PAGE"] += 1
+                r_index()
+                return redirect(url_for('index'))
+            elif data['myval'] == '3':
+                session["PAGE"] = 0
+                r_index()
+                return redirect(url_for('index'))
+        except:
+            session["PAGE"] = 0
+            if data['search?'] != '1':
+                query ="SELECT * FROM unique_books LEFT JOIN books ON unique_books.serial_Number = books.serial_Number WHERE unique_books.serial_number = "+data['myp']
+                i = fx.mysql_q(query)
+                redirect_book(i[0])
+                redirect_book_admin(i[0])
+                if session.get('user_id') in admins  and 'admin-btn' in data:
+                    return redirect(url_for('admin'))
+                return redirect(url_for('book'))
+            else:
+                selected_option = data['sortOption']
+                selected_cat = data['cat_option']
+                search_f(data['myp'],selected_option,selected_cat)
     if session.get('user_id') != None:
-        return render_template('index.html',allBooks = page_f(fx.make_one(allBooks)),username = session.get('user_username'),admin = session.get('user_id') in admins,PAGE = PAGE,LOCK = lock_next(page_f(fx.make_one(allBooks))))
+        return render_template('index.html',allBooks = page_f(fx.make_one(session.get("allBooks"))),username = session.get('user_username'),admin = session.get('user_id') in admins,PAGE = session.get("PAGE"),LOCK = lock_next(page_f(fx.make_one(session.get("allBooks")))))
     else:
         return redirect(url_for('login'))
     
@@ -576,15 +573,14 @@ def lib():
 
 @app.route("/login")
 def login():
-    # Technically we could use empty list [] as scopes to do just sign in,
-    # here we choose to also collect end user consent upfront
+    session["PAGE"] = 24
     session["flow"] = _build_auth_code_flow(scopes=app_config.SCOPE)
     return redirect(session["flow"]["auth_uri"])
 
 from werkzeug.middleware.proxy_fix import ProxyFix
 app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1)
 app.config.from_object(app_config)
-@app.route(app_config.REDIRECT_PATH)  # Its absolute URL must match your app's redirect_uri set in AAD
+@app.route(app_config.REDIRECT_PATH)
 def authorized():
     try:
         cache = _load_cache()
@@ -685,11 +681,7 @@ def logout():
         return redirect(url_for("login"))
 
 if __name__ == '__main__':
-    fx.res_stock()
-    books = fx.mysql_q("SELECT * FROM unique_books LEFT JOIN books ON unique_books.serial_Number = books.serial_Number ORDER BY unique_books.BOOK_NAME;")
-    for i in books:
-        tempBook = Book(i[7], i[0], i[1], i[9], i[2], i[10] , i[11],fx.get_stock(i[0]),i[3],i[4],i[5],i[6])
-        allBooks.append(tempBook)
+    
     a = fx.mysql_q("SELECT ID,EMAIL FROM USERS")
     acc = []
     for i in open("admins.txt","r"):

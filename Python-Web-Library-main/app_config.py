@@ -13,6 +13,6 @@ REDIRECT_URI = "http://localhost:5000/getAToken"
 #Your DB settings
 db_host = 'localhost'
 db_user = 'root'
-db_password = ''
+db_password = 'root'
 db_table = "library"
 #Place your logo in base.html line:160
